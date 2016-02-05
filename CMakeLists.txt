@@ -44,7 +44,7 @@ ENDIF()
 
 # Declare headers
 SET(${PROJECT_NAME}_HEADERS
-  include/hpp/model/body.hh
+  include/hpp/affordance/affordance-extraction.hh
  )
 
 # Declare dependencies
@@ -58,7 +58,7 @@ ADD_REQUIRED_DEPENDENCY("hpp-fcl >= 0.2.9")
 #PKG_CONFIG_APPEND_LIBS("hpp-affordance")
 
 ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(tests)
+#ADD_SUBDIRECTORY(tests)
 
 SETUP_PROJECT_FINALIZE()
 #SETUP_PROJECT_CPACK()
