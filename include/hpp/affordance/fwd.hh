@@ -17,14 +17,14 @@
 // <http://www.gnu.org/licenses/>.
 
 #ifndef HPP_AFFORDANCE_FWD_HH
-# define HPP_AFFORDANCE_FWD_HH
+#define HPP_AFFORDANCE_FWD_HH
 
 
 //# include <vector>
 //# include <deque>
 //# include <list>
 //# include <set>
-//# include <hpp/util/pointer.hh>
+# include <hpp/util/pointer.hh>
 //# include <hpp/constraints/fwd.hh>
 
 namespace hpp {

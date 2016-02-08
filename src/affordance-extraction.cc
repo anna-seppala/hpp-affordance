@@ -16,29 +16,20 @@
 // hpp-core  If not, see
 // <http://www.gnu.org/licenses/>.
 
-#ifndef HPP_AFFORDANCE_AFFORDANCE_EXTRACTION_HH
-#define HPP_AFFORDANCE_AFFORDANCE_EXTRACTION_HH
+#include <hpp/affordance/affordance-extraction.hh>
+// #include <hpp/fcl/collision.h>
 
-//# include <hpp/core/collision-validation-report.hh>
-//# include <hpp/core/config-validation.hh>
-//# include <hpp/fcl/collision_data.h>
-#include <hpp/affordance/fwd.hh>
-#include <hpp/affordance/config.hh>
 namespace hpp {
   namespace affordance {
-    /// \addtogroup 
-    /// \{
 
-    /// Extract whole-body affordances from fcl
-    ///
-    class HPP_AFFORDANCE_DLLAPI AffordanceExtraction
+    AffordanceExtractionPtr_t AffordanceExtraction::create ()
     {
-      public:
-        static AffordanceExtractionPtr_t create ();
+      AffordanceExtraction* ptr = new AffordanceExtraction ();
+      return AffordanceExtractionPtr_t (ptr);
+    } 
 
-    }; // class AffordanceExtraction
-    /// \}
+
   } // namespace affordance
 } // namespace hpp
 
-#endif // HPP_AFFORDANCE_AFFORDANCE_EXTRACTION_HH
+
