@@ -19,11 +19,9 @@
 #ifndef HPP_AFFORDANCE_AFFORDANCE_EXTRACTION_HH
 #define HPP_AFFORDANCE_AFFORDANCE_EXTRACTION_HH
 
-//# include <hpp/core/collision-validation-report.hh>
-//# include <hpp/core/config-validation.hh>
-//# include <hpp/fcl/collision_data.h>
 #include <hpp/affordance/fwd.hh>
 #include <hpp/affordance/config.hh>
+
 namespace hpp {
   namespace affordance {
     /// \addtogroup 
@@ -34,9 +32,18 @@ namespace hpp {
     class HPP_AFFORDANCE_DLLAPI AffordanceExtraction
     {
       public:
-        static AffordanceExtractionPtr_t create ();
+        AffordanceExtraction (){}
+        AffordanceExtraction (std::vector <std::pair <const char*, 
+                              OperationBasePtr_t> > & operationVec): 
+                              operations_(operationVec) {}
+        static AffordanceExtractionPtr_t create (std::vector <std::pair <const char*,
+                                                 OperationBasePtr_t> > & operationVec);
+        // determine best form of input parameter -> pure triangles/collisionObjects/etc?
+        void giveAffordances (const CollisionObjectPtr_t& obstacle);
 
-    }; // class AffordanceExtraction
+      private:
+        std::vector <std::pair <const char*, OperationBasePtr_t> > operations_;
+    }; // class AffordanceExtraction 
     /// \}
   } // namespace affordance
 } // namespace hpp

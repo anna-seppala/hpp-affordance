@@ -17,14 +17,17 @@
 // <http://www.gnu.org/licenses/>.
 
 #include <hpp/affordance/affordance-extraction.hh>
-// #include <hpp/fcl/collision.h>
+#include <hpp/affordance/operations.hh>
+#include<hpp/fcl/collision_object.h> 
+#include <hpp/fcl/collision.h>
 
 namespace hpp {
   namespace affordance {
 
-    AffordanceExtractionPtr_t AffordanceExtraction::create ()
+    AffordanceExtractionPtr_t AffordanceExtraction::create (std::vector <std::pair <const char*,
+                                                            OperationBasePtr_t> > & operationVec)
     {
-      AffordanceExtraction* ptr = new AffordanceExtraction ();
+      AffordanceExtraction* ptr = new AffordanceExtraction (operationVec);
       return AffordanceExtractionPtr_t (ptr);
     } 
 

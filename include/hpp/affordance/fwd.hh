@@ -19,18 +19,22 @@
 #ifndef HPP_AFFORDANCE_FWD_HH
 #define HPP_AFFORDANCE_FWD_HH
 
-
-//# include <vector>
-//# include <deque>
-//# include <list>
-//# include <set>
-# include <hpp/util/pointer.hh>
+#include <vector>
+#include <hpp/util/pointer.hh>
 //# include <hpp/constraints/fwd.hh>
 
 namespace hpp {
   namespace affordance {
     HPP_PREDEF_CLASS (AffordanceExtraction);
+    HPP_PREDEF_CLASS (OperationBase);
+    HPP_PREDEF_CLASS (CollisionObject);
+    HPP_PREDEF_CLASS (SupportOperation);
+    HPP_PREDEF_CLASS (LeanOperation);
 
+    typedef boost::shared_ptr <SupportOperation> SupportOperationPtr_t;
+    typedef boost::shared_ptr <LeanOperation> LeanOperationPtr_t;
+    typedef boost::shared_ptr <CollisionObject> CollisionObjectPtr_t;
+    typedef boost::shared_ptr <OperationBase> OperationBasePtr_t; 
     typedef boost::shared_ptr <AffordanceExtraction> AffordanceExtractionPtr_t;
   } // namespace affordance
 } // namespace hpp

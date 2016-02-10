@@ -46,6 +46,7 @@ ENDIF()
 SET(${PROJECT_NAME}_HEADERS
   include/hpp/affordance/fwd.hh
   include/hpp/affordance/affordance-extraction.hh
+  include/hpp/affordance/operations.hh
  )
 
 # Declare dependencies
