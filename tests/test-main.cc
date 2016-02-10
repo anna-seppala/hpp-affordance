@@ -4,10 +4,18 @@
 #include<hpp/fcl/collision_object.h>
 #include <hpp/fcl/BVH/BVH_model.h>
 #include <hpp/fcl/shape/geometric_shape_to_BVH_model.h>
+#include <hpp/affordance/operations.hh>
 
 int main ()
 {
-  hpp::affordance::AffordanceExtractionPtr_t u = hpp::affordance::AffordanceExtraction::create();
+  hpp::affordance::SupportOperationPtr_t support (new hpp::affordance::SupportOperation());
+  hpp::affordance::LeanOperationPtr_t lean (new hpp::affordance::LeanOperation(0.1));
+  
+  std::vector <std::pair <const char*, hpp::affordance::OperationBasePtr_t> > operations;
+  operations.push_back(std::make_pair("Support", support));
+  operations.push_back(std::make_pair("Lean", lean)); 
+  
+  hpp::affordance::AffordanceExtractionPtr_t u = hpp::affordance::AffordanceExtraction::create(operations);
   std::cout << "Affordance Extraction object created." << std::endl;
 
   std::vector<fcl::Vec3f> vertices;

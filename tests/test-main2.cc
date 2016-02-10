@@ -4,6 +4,7 @@
 #include<hpp/fcl/collision_object.h>
 #include <hpp/fcl/BVH/BVH_model.h>
 #include <hpp/fcl/shape/geometric_shape_to_BVH_model.h>
+#include <hpp/affordance/operations.hh>
 
 using namespace fcl;
 
@@ -14,29 +15,40 @@ void generateEnvironmentsMesh(std::vector<CollisionObject*>& env, double env_sca
 
 int main ()
 {
-  hpp::affordance::AffordanceExtractionPtr_t u = hpp::affordance::AffordanceExtraction::create();
+  hpp::affordance::SupportOperationPtr_t support (new hpp::affordance::SupportOperation());
+  hpp::affordance::LeanOperationPtr_t lean (new hpp::affordance::LeanOperation(0.1));
+  
+  std::vector <std::pair <const char*, hpp::affordance::OperationBasePtr_t> > operations;
+  operations.push_back(std::make_pair("Support", support));
+  operations.push_back(std::make_pair("Lean", lean)); 
+
+  hpp::affordance::AffordanceExtractionPtr_t u = hpp::affordance::AffordanceExtraction::create(operations);
   std::cout << "Affordance Extraction object created." << std::endl;
 
   std::vector<CollisionObject*> query;
 
-  generateEnvironmentsMesh(query, 200, 100);
+  generateEnvironmentsMesh(query, 20, 10);
+
+  std::cout << "Environment mesh created" << std::endl;
 
   return 0;
 }
 
-unsigned int rand_interval(unsigned int min, unsigned int max)
+double rand_interval(double min, double max)
 {
+
     int r;
-    const unsigned int range = 1 + max - min;
-    const unsigned int buckets = RAND_MAX / range;
-    const unsigned int limit = buckets * range;
+    const double range = 1 + max - min;
+    const double maxRand = RAND_MAX;
+    const double buckets = maxRand / range;
+    const double limit = buckets * range;
 
     /* Create equal size buckets all in a row, then fire randomly towards
      * the buckets until you land in one of them. All buckets are equally
      * likely. If you land off the end of the line of buckets, try again. */
     do
     {
-        r = rand();
+        r = std::rand ();
     } while (r >= limit);
 
     return min + (r / buckets);
@@ -56,7 +68,7 @@ void eulerToMatrix(FCL_REAL a, FCL_REAL b, FCL_REAL c, Matrix3f& R)
              s1 * s3 - c1 * c3 * s2, c3 * s1 * s2 + c1 * s3, c2 * c3);
 }
 
-void generateRandomTransforms(FCL_REAL extents[6], std::vector<Transform3f>& transforms, std::size_t n)
+void generateRandomTransforms(double extents[6], std::vector<Transform3f>& transforms, std::size_t n)
 {
   transforms.resize(n);
   for(std::size_t i = 0; i < n; ++i)
@@ -82,7 +94,7 @@ void generateRandomTransforms(FCL_REAL extents[6], std::vector<Transform3f>& tra
 
 void generateEnvironmentsMesh(std::vector<CollisionObject*>& env, double env_scale, std::size_t n)
 {
-  FCL_REAL extents[] = {-env_scale, env_scale, -env_scale, env_scale, -env_scale, env_scale};
+  double extents[] = {-env_scale, env_scale, -env_scale, env_scale, -env_scale, env_scale};
   std::vector<Transform3f> transforms;
 
   generateRandomTransforms(extents, transforms, n);
