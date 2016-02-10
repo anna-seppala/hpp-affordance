@@ -27,9 +27,10 @@ namespace hpp {
     class OperationBase
     {
       public:
-        explicit OperationBase (): zWorld_(0,0,1), margin_(0.3) {}
-        explicit OperationBase (const float & margin): zWorld_(0,0,1), margin_(margin) {}
-
+        OperationBase (): zWorld_(0,0,1), margin_(0.3), 
+                          affordance_("noAffordance") {}
+        explicit OperationBase (const float & margin = 0.3, const char* affordanceName = "noAffordance"): 
+                                zWorld_(0,0,1), margin_(margin), affordance_(affordanceName) {}
         virtual bool requirement (fcl::Vec3f normal) {}
 
         // return world z axis
@@ -42,16 +43,21 @@ namespace hpp {
         {
           return margin_;
         }
+        const char* getAffordanceName ()
+        {
+          return affordance_;
+        }
       private:
         fcl::Vec3f zWorld_;
         float margin_;
+        const char* affordance_;
     }; // class OperationBase
 
     class SupportOperation : public OperationBase
     {
       public:
-         explicit SupportOperation (): OperationBase () {}
-         explicit SupportOperation (const float & margin): OperationBase(margin) {}
+	 explicit SupportOperation (const float & margin = 0.3, const char* affordanceName = "Support"): 
+                                    OperationBase(margin, affordanceName) {}
 
         bool requirement (fcl::Vec3f normal) 
       {
@@ -65,8 +71,8 @@ namespace hpp {
     class LeanOperation : public OperationBase
     {
       public:
-        explicit LeanOperation (): OperationBase () {}
-        explicit LeanOperation (const float & margin): OperationBase(margin) {}
+        explicit LeanOperation (const float & margin = 0.3, const char* affordanceName = "Lean"): 
+                                OperationBase(margin, affordanceName) {}
         bool requirement (fcl::Vec3f normal) 
         {
           if (fabs (normal.dot(getZWorld ())) < getMargin ()) {

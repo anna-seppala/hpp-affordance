@@ -21,7 +21,8 @@
 
 #include <vector>
 #include <hpp/util/pointer.hh>
-//# include <hpp/constraints/fwd.hh>
+#include <hpp/fcl/fwd.hh>
+#include <hpp/fcl/math/vec_3f.h>
 
 namespace hpp {
   namespace affordance {
