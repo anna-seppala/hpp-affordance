@@ -21,6 +21,8 @@
 #include<hpp/fcl/collision_object.h> 
 #include <hpp/fcl/collision.h>
 #include <hpp/fcl/BVH/BVH_model.h>
+#include <algorithm>
+
 
 namespace hpp {
   namespace affordance {
@@ -43,10 +45,41 @@ namespace hpp {
         return model;
     }
 
+    void AffordanceExtraction::searchLinkedTriangles(std::vector<unsigned int>& listPotential,
+                                                     const unsigned int& refOpIdx,
+                                                     const std::vector<Triangle>& allTriangles,
+                                                     const std::vector<unsigned int>& searchableTriangles,
+                                                     const unsigned int& refTriIdx) 
+    {
+      double area = .0;
+      Triangle refTri = allTriangles[refTriIdx];
+      // TODO: fix search below (when triangles actively erased from vector, for loop jumps over existing ones)
+      // deal with area
+      // delete refTri from searchable triangles
+      for (unsigned int searchIdx = 0; searchIdx < searchableTriangles.size (); searchIdx++) {
+        if (searchableTriangles[searchIdx] == refTriIdx) {
+          continue;
+        }
+        Triangle searchTri = allTriangles [searchableTriangles [searchIdx]];
+        if (operations_[refOpIdx]->requirement (searchTri.normal)) {
+          if ((searchTri.normal - refTri.normal).sqrLength () < marginRad_) {
+            area += searchTri.area;
+            listPotential.push_back (searchableTriangles [searchIdx]);
+            searchLinkedTriangles (listPotential, refOpIdx, allTriangles, 
+                                   searchableTriangles, searchableTriangles [searchIdx]);
+          }
+          
+        }
+      }
+    }
+
     void AffordanceExtraction::extractAffordances (const fcl::CollisionObjectPtr_t& colObj)
     {
       BVHModelOBConst_Ptr_t model =  GetModel (colObj);
       std::vector <Triangle> triangles;
+      std::vector <unsigned int> unsetTriangles;
+      double totArea = .0;
+      std::vector<std::vector<unsigned int> > potentialAffordances (operations_.size ());
 
       for(unsigned int i = 0; i < model->num_tris; ++i)
       {
@@ -60,17 +93,27 @@ namespace hpp {
           model->vertices [fcltri [2]] + colObj->getTranslation ();
 
         triangles.push_back (Triangle (tri));
+        // save vector index of triangles and their quantity. 
+	unsetTriangles.push_back(i);
       }
-      std::vector<int> unsetTriangles, unseenTriangles;
-      for (unsigned int j = 0; j < triangles.size (); j++) {
-       for (unsigned int k = 0; k < operations_.size (); k++) {
-         if (operations_[k]->requirement (triangles[k].normal)) {
-           
-           
+      std::vector <unsigned int> unseenTriangles;
+      for (unsigned int triIdx = 0; triIdx < triangles.size (); triIdx++) {
+        // look for triangle in set of triangles not yet given an affordance:
+        std::vector<unsigned int>::iterator it = std::find (unsetTriangles.begin (), unsetTriangles.end (), triIdx);
+        if (it == unsetTriangles.end ()) {
+          continue;
+        }
+        // set list of searchable (unseen) triangles equal to all triangles not yet given an affordance.
+        unseenTriangles = unsetTriangles;
+        for (unsigned int opIdx = 0; opIdx < operations_.size (); opIdx++) {
+          if (operations_[opIdx]->requirement (triangles[triIdx].normal)) {
+             totArea += triangles[triIdx].area;
+             potentialAffordances[opIdx].push_back(triIdx);
+             searchLinkedTriangles(potentialAffordances [opIdx], opIdx, triangles, unseenTriangles, triIdx); 
+             break; 
           } 
-         
-        } 
- 
+          
+        }
 
       }
     }

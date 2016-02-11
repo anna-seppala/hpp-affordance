@@ -34,7 +34,7 @@ namespace hpp {
 
     struct Triangle
     {
-      Triangle (TrianglePoints inputPoints): points (inputPoints) 
+      Triangle (TrianglePoints inputPoints): points (inputPoints)
       {
         TriangleArea (points);
         TriangleNormal (points);
@@ -64,14 +64,20 @@ namespace hpp {
     {
       public:
         AffordanceExtraction (){}
-        AffordanceExtraction (std::vector <OperationBasePtr_t> & operationVec): 
-                              operations_(operationVec) {}
+        AffordanceExtraction (std::vector <OperationBasePtr_t> & operationVec, double margin=0.3): 
+                              operations_(operationVec), marginRad_(margin) {}
         static AffordanceExtractionPtr_t create (std::vector <OperationBasePtr_t> & operationVec);
+        void searchLinkedTriangles(std::vector<unsigned int>& listPotential,
+                                                     const unsigned int& refOptIdx,
+                                                     const std::vector<Triangle>& allTriangles,
+                                                     const std::vector<unsigned int>& searchableTriangles,
+                                                     const unsigned int& refTriIdx);
         // determine best form of input parameter -> pure triangles/collisionObjects/etc?
         void extractAffordances (const fcl::CollisionObjectPtr_t& colObj);
         std::vector <OperationBasePtr_t> getOperations ();
       private:
         std::vector <OperationBasePtr_t> operations_;
+        double marginRad_;
 
     }; // class AffordanceExtraction 
     /// \}
