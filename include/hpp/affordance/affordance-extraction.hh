@@ -32,10 +32,12 @@ namespace hpp {
       fcl::Vec3f p1, p2, p3;
     };
 
-    struct Triangle
+    struct Triangle: public fcl::Triangle
     {
-      Triangle (TrianglePoints inputPoints): points (inputPoints)
+      Triangle (const fcl::Triangle& inFclTri, const TrianglePoints& inPoints):
+                points (inPoints)
       {
+        set(inFclTri[0], inFclTri[1], inFclTri[2]);
         TriangleArea (points);
         TriangleNormal (points);
       }
@@ -70,14 +72,15 @@ namespace hpp {
         void searchLinkedTriangles(std::vector<unsigned int>& listPotential,
                                                      const unsigned int& refOptIdx,
                                                      const std::vector<Triangle>& allTriangles,
-                                                     const std::vector<unsigned int>& searchableTriangles,
-                                                     const unsigned int& refTriIdx);
+                                                     std::vector<unsigned int>& searchableTriangles,
+                                                     const unsigned int& refTriIdx, double& area);
         // determine best form of input parameter -> pure triangles/collisionObjects/etc?
         void extractAffordances (const fcl::CollisionObjectPtr_t& colObj);
         std::vector <OperationBasePtr_t> getOperations ();
       private:
         std::vector <OperationBasePtr_t> operations_;
         double marginRad_;
+        std::multimap <const char*, std::vector <unsigned int> > foundAffordances_;
 
     }; // class AffordanceExtraction 
     /// \}

@@ -20,6 +20,7 @@
 #define HPP_AFFORDANCE_FWD_HH
 
 #include <vector>
+#include <map>
 #include <hpp/util/pointer.hh>
 #include <hpp/fcl/fwd.hh>
 #include <hpp/fcl/math/vec_3f.h>

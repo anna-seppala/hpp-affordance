@@ -27,10 +27,11 @@ namespace hpp {
     class OperationBase
     {
       public:
-        OperationBase (): zWorld_(0,0,1), margin_(0.3), 
+        OperationBase (): zWorld_(0,0,1), margin_(0.3), minArea_(0.25), 
                           affordance_("noAffordance") {}
-        explicit OperationBase (const float & margin = 0.3, const char* affordanceName = "noAffordance"): 
-                                zWorld_(0,0,1), margin_(margin), affordance_(affordanceName) {}
+        explicit OperationBase (const float & margin = 0.3, const double minArea = 0.25, 
+                                const char* affordanceName = "noAffordance"): zWorld_(0,0,1), 
+                                minArea_(minArea), margin_(margin), affordance_(affordanceName) {}
         virtual bool requirement (fcl::Vec3f normal) {}
 
         // return world z axis
@@ -47,17 +48,23 @@ namespace hpp {
         {
           return affordance_;
         }
+        const double getMinArea ()
+        {
+          return minArea_;
+        }
       private:
         fcl::Vec3f zWorld_;
         float margin_;
         const char* affordance_;
+        const double minArea_;
     }; // class OperationBase
 
     class SupportOperation : public OperationBase
     {
       public:
-	 explicit SupportOperation (const float & margin = 0.3, const char* affordanceName = "Support"): 
-                                    OperationBase(margin, affordanceName) {}
+	 explicit SupportOperation (const float & margin = 0.3, const double minArea = 0.25,  
+                                    const char* affordanceName = "Support"): 
+                                    OperationBase(margin, minArea, affordanceName) {}
 
         bool requirement (fcl::Vec3f normal) 
       {
@@ -71,8 +78,9 @@ namespace hpp {
     class LeanOperation : public OperationBase
     {
       public:
-        explicit LeanOperation (const float & margin = 0.3, const char* affordanceName = "Lean"): 
-                                OperationBase(margin, affordanceName) {}
+        explicit LeanOperation (const float & margin = 0.3, const double minArea = 0.25,  
+                                const char* affordanceName = "Lean"): 
+                                OperationBase(margin, minArea, affordanceName) {}
         bool requirement (fcl::Vec3f normal) 
         {
           if (fabs (normal.dot(getZWorld ())) < getMargin ()) {

@@ -48,30 +48,41 @@ namespace hpp {
     void AffordanceExtraction::searchLinkedTriangles(std::vector<unsigned int>& listPotential,
                                                      const unsigned int& refOpIdx,
                                                      const std::vector<Triangle>& allTriangles,
-                                                     const std::vector<unsigned int>& searchableTriangles,
-                                                     const unsigned int& refTriIdx) 
+                                                     std::vector<unsigned int>& searchableTriangles,
+                                                     const unsigned int& refTriIdx, double& area) 
     {
-      double area = .0;
       Triangle refTri = allTriangles[refTriIdx];
       // TODO: fix search below (when triangles actively erased from vector, for loop jumps over existing ones)
       // deal with area
-      // delete refTri from searchable triangles
-      for (unsigned int searchIdx = 0; searchIdx < searchableTriangles.size (); searchIdx++) {
-        if (searchableTriangles[searchIdx] == refTriIdx) {
-          continue;
-        }
-        Triangle searchTri = allTriangles [searchableTriangles [searchIdx]];
-        if (operations_[refOpIdx]->requirement (searchTri.normal)) {
-          if ((searchTri.normal - refTri.normal).sqrLength () < marginRad_) {
-            area += searchTri.area;
-            listPotential.push_back (searchableTriangles [searchIdx]);
-            searchLinkedTriangles (listPotential, refOpIdx, allTriangles, 
-                                   searchableTriangles, searchableTriangles [searchIdx]);
+      // find a cleaner way of removing & resizing the searchableTriangels vector
+      std::remove (searchableTriangles.begin (), searchableTriangles.end (), refTriIdx);
+      searchableTriangles.pop_back ();
+      for (unsigned int searchIdx = 0; searchIdx < allTriangles.size (); searchIdx++) {
+        std::vector<unsigned int>::iterator it = std::find (searchableTriangles.begin (),
+                                                            searchableTriangles.end (), searchIdx);
+          if (it == searchableTriangles.end ()) {
+            continue;
           }
-          
+        for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) { 
+          Triangle searchTri = allTriangles [searchIdx];
+          if (refTri[vertIdx] == searchTri[0] || refTri[vertIdx] == searchTri[3]
+              || refTri[vertIdx] == searchTri[2]) {
+            if (operations_[refOpIdx]->requirement (searchTri.normal)) {
+              if ((searchTri.normal - refTri.normal).sqrLength () < marginRad_) {
+                area += searchTri.area;
+                listPotential.push_back (searchIdx);
+                searchLinkedTriangles (listPotential, refOpIdx, allTriangles, 
+                                       searchableTriangles, searchIdx, area);
+              }
+            } else {
+              // if linked face does not fulfil global requirement, discard
+              std::remove (searchableTriangles.begin (), searchableTriangles.end (), searchIdx);
+              searchableTriangles.pop_back ();
+            }  
         }
       }
     }
+}
 
     void AffordanceExtraction::extractAffordances (const fcl::CollisionObjectPtr_t& colObj)
     {
@@ -92,7 +103,7 @@ namespace hpp {
         tri.p3 = colObj->getRotation () *
           model->vertices [fcltri [2]] + colObj->getTranslation ();
 
-        triangles.push_back (Triangle (tri));
+        triangles.push_back (Triangle (fcltri, tri));
         // save vector index of triangles and their quantity. 
 	unsetTriangles.push_back(i);
       }
@@ -109,7 +120,16 @@ namespace hpp {
           if (operations_[opIdx]->requirement (triangles[triIdx].normal)) {
              totArea += triangles[triIdx].area;
              potentialAffordances[opIdx].push_back(triIdx);
-             searchLinkedTriangles(potentialAffordances [opIdx], opIdx, triangles, unseenTriangles, triIdx); 
+             searchLinkedTriangles(potentialAffordances [opIdx], opIdx, triangles, unseenTriangles, triIdx, totArea);
+             if (totArea > operations_[opIdx]->getMinArea ()) {
+              foundAffordances_.insert (std::make_pair (operations_[opIdx]->getAffordanceName (), 
+                                                        potentialAffordances [opIdx]));
+              for (unsigned int removeIdx = 0; removeIdx < potentialAffordances [opIdx].size (); removeIdx++) {
+                std::remove (unsetTriangles.begin (), unsetTriangles.end (), potentialAffordances [opIdx][removeIdx]);
+                unsetTriangles.pop_back ();
+              }               potentialAffordances [opIdx].clear ();
+              
+             } else {std::cout << "minArea: " << operations_[opIdx]->getMinArea () << std::endl;}
              break; 
           } 
           

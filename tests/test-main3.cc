@@ -55,7 +55,9 @@ int main ()
   std::cout << "Model has " << model->num_tris << " triangles and " 
             << model->num_vertices << " vertices." << std::endl;
   
-  fcl::CollisionObject* obj = new fcl::CollisionObject(model, boxPose);
+  boost::shared_ptr <fcl::CollisionObject> obj (new fcl::CollisionObject(model, boxPose));
+
+  u->extractAffordances (obj);
 
   return 0;
 }
