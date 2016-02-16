@@ -65,8 +65,8 @@ namespace hpp {
           }
         for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) { 
           Triangle searchTri = allTriangles [searchIdx];
-          if (refTri[vertIdx] == searchTri[0] || refTri[vertIdx] == searchTri[3]
-              || refTri[vertIdx] == searchTri[2]) {
+          if ((*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[0] || (*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[3]
+              || (*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[2]) {
             if (operations_[refOpIdx]->requirement (searchTri.normal)) {
               if ((searchTri.normal - refTri.normal).sqrLength () < marginRad_) {
                 area += searchTri.area;
@@ -121,7 +121,8 @@ namespace hpp {
              totArea += triangles[triIdx].area;
              potentialAffordances[opIdx].push_back(triIdx);
              searchLinkedTriangles(potentialAffordances [opIdx], opIdx, triangles, unseenTriangles, triIdx, totArea);
-             if (totArea > operations_[opIdx]->getMinArea ()) {
+            if (totArea > operations_[opIdx]->getMinArea ()) {
+              // save totArea for further use as well?
               foundAffordances_.insert (std::make_pair (operations_[opIdx]->getAffordanceName (), 
                                                         potentialAffordances [opIdx]));
               for (unsigned int removeIdx = 0; removeIdx < potentialAffordances [opIdx].size (); removeIdx++) {
@@ -129,12 +130,10 @@ namespace hpp {
                 unsetTriangles.pop_back ();
               }               potentialAffordances [opIdx].clear ();
               
-             } else {std::cout << "minArea: " << operations_[opIdx]->getMinArea () << std::endl;}
+             }
              break; 
           } 
-          
         }
-
       }
     }
 

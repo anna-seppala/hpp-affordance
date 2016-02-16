@@ -32,16 +32,15 @@ namespace hpp {
       fcl::Vec3f p1, p2, p3;
     };
 
-    struct Triangle: public fcl::Triangle
+    struct Triangle
     {
       Triangle (const fcl::Triangle& inFclTri, const TrianglePoints& inPoints):
-                points (inPoints)
+                points (inPoints), fclTri (new  fcl::Triangle (inFclTri))
       {
-        set(inFclTri[0], inFclTri[1], inFclTri[2]);
         TriangleArea (points);
         TriangleNormal (points);
       }
-      double TriangleArea(TrianglePoints& tri)
+      void TriangleArea(TrianglePoints& tri)
       {
         double a, b, c;
         a = (tri.p1 - tri.p2).norm();
@@ -50,7 +49,7 @@ namespace hpp {
         double s = 0.5 * (a + b + c);
         area = sqrt(s * (s-a) * (s-b) * (s-c));
       }
-      fcl::Vec3f TriangleNormal(TrianglePoints& tri)
+      void TriangleNormal(TrianglePoints& tri)
       {
         normal = (tri.p3 - tri.p1).cross(tri.p2 - tri.p1);
         normal.normalize();
@@ -58,6 +57,7 @@ namespace hpp {
       TrianglePoints points;
       double area;
       fcl::Vec3f normal;
+      boost::shared_ptr <fcl::Triangle> fclTri;
     };
 
     /// Extract whole-body affordances from fcl
