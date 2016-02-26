@@ -34,25 +34,6 @@ namespace hpp {
                                 margin_(margin), minArea_(minArea), affordance_(affordanceName) {}
         virtual bool requirement (fcl::Vec3f normal) =0;
 
-        // return world z axis
-        fcl::Vec3f getZWorld () 
-        {
-          return zWorld_;
-        }
-        // return margin used for comparisons
-        double getMargin ()
-        {
-          return margin_;
-        }
-        const char* getAffordanceName ()
-        {
-          return affordance_;
-        }
-        double getMinArea ()
-        {
-          return minArea_;
-        }
-      private:
         const fcl::Vec3f zWorld_;
         const double margin_;
         const double minArea_;
@@ -68,7 +49,7 @@ namespace hpp {
 
         bool requirement (fcl::Vec3f normal) 
       {
-        if ((getZWorld () - normal).sqrLength() < getMargin ()) {
+        if ((zWorld_ - normal).sqrLength() < margin_) {
          return true;
         }
 	return false;
@@ -83,7 +64,7 @@ namespace hpp {
                                 OperationBase(margin, minArea, affordanceName) {}
         bool requirement (fcl::Vec3f normal) 
         {
-          if (fabs (normal.dot(getZWorld ())) < getMargin ()) {
+          if (fabs (normal.dot(zWorld_)) < margin_) {
             return true;
           }
 	  return false;

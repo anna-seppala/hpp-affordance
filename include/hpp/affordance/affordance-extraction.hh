@@ -60,29 +60,34 @@ namespace hpp {
       boost::shared_ptr <fcl::Triangle> fclTri;
     };
 
-    /// Extract whole-body affordances from fcl
-    ///
-    class HPP_AFFORDANCE_DLLAPI AffordanceExtraction
+    class Affordance 
     {
       public:
-        AffordanceExtraction (){}
-        AffordanceExtraction (std::vector <OperationBasePtr_t> & operationVec, double margin=0.3): 
-                              operations_(operationVec), marginRad_(margin) {}
-        static AffordanceExtractionPtr_t create (std::vector <OperationBasePtr_t> & operationVec);
-        void searchLinkedTriangles(std::vector<unsigned int>& listPotential,
-                                                     const unsigned int& refOptIdx,
-                                                     const std::vector<Triangle>& allTriangles,
-                                                     std::vector<unsigned int>& searchableTriangles,
-                                                     const unsigned int& refTriIdx, double& area);
-        // determine best form of input parameter -> pure triangles/collisionObjects/etc?
-        void extractAffordances (const fcl::CollisionObjectPtr_t& colObj);
-        std::vector <OperationBasePtr_t> getOperations ();
-      private:
-        std::vector <OperationBasePtr_t> operations_;
-        double marginRad_;
-        std::multimap <const char*, std::vector <unsigned int> > foundAffordances_;
+      Affordance (const std::vector<unsigned int>& idxVec, 
+                  const fcl::CollisionObjectPtr_t& colObj):
+                  indices_(idxVec), colObj_(colObj) {}
+      std::vector<unsigned int> indices_;
+      fcl::CollisionObjectPtr_t colObj_;
+    };
 
-    }; // class AffordanceExtraction 
+    class SemanticsData 
+    {
+      public:
+      SemanticsData (const long unsigned int& affordanceCount) 
+      {
+        affordances_.resize(affordanceCount);
+      }
+      std::vector<std::vector<AffordancePtr_t> > affordances_;
+    };
+
+    /// Free functions to extract whole-body affordances from fcl
+    ///
+    void searchLinkedTriangles(std::vector<unsigned int>& listPotential, const OperationBasePtr_t& refOp,
+                               const std::vector<Triangle>& allTris, std::vector<unsigned int>& searchableTris,
+                               const unsigned int& refTriIdx, double& area);
+
+    SemanticsDataPtr_t AffordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
+                                           const std::vector <OperationBasePtr_t> & opVec);
     /// \}
   } // namespace affordance
 } // namespace hpp

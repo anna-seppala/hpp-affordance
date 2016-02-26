@@ -30,12 +30,6 @@ namespace hpp {
     typedef fcl::BVHModel<fcl::OBBRSS> BVHModelOB;
     typedef boost::shared_ptr<const BVHModelOB> BVHModelOBConst_Ptr_t;
 
-    AffordanceExtractionPtr_t AffordanceExtraction::create (std::vector <OperationBasePtr_t> & operationVec)
-    {
-      AffordanceExtraction* ptr = new AffordanceExtraction (operationVec);
-      return AffordanceExtractionPtr_t (ptr);
-    }
-    
     BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t object)
     {
         assert (object->collisionGeometry ()->getNodeType () == fcl::BV_OBBRSS);
@@ -45,52 +39,51 @@ namespace hpp {
         return model;
     }
 
-    void AffordanceExtraction::searchLinkedTriangles(std::vector<unsigned int>& listPotential,
-                                                     const unsigned int& refOpIdx,
-                                                     const std::vector<Triangle>& allTriangles,
-                                                     std::vector<unsigned int>& searchableTriangles,
-                                                     const unsigned int& refTriIdx, double& area) 
-    {
-      Triangle refTri = allTriangles[refTriIdx];
-      // TODO: fix search below (when triangles actively erased from vector, for loop jumps over existing ones)
-      // deal with area
+    void searchLinkedTriangles(std::vector<unsigned int>& listPotential, const OperationBasePtr_t& refOp,
+                               const std::vector<Triangle>& allTris, std::vector<unsigned int>& searchableTris,
+                               const unsigned int& refTriIdx, double& area) 
+    { 
+      const float marginRad = 0.3;
+      Triangle refTri = allTris[refTriIdx];
       // find a cleaner way of removing & resizing the searchableTriangels vector
-      std::remove (searchableTriangles.begin (), searchableTriangles.end (), refTriIdx);
-      searchableTriangles.pop_back ();
-      for (unsigned int searchIdx = 0; searchIdx < allTriangles.size (); searchIdx++) {
-        std::vector<unsigned int>::iterator it = std::find (searchableTriangles.begin (),
-                                                            searchableTriangles.end (), searchIdx);
-          if (it == searchableTriangles.end ()) {
+      std::remove (searchableTris.begin (), searchableTris.end (), refTriIdx);
+      searchableTris.pop_back ();
+      for (unsigned int searchIdx = 0; searchIdx < allTris.size (); searchIdx++) {
+        std::vector<unsigned int>::iterator it = std::find (searchableTris.begin (),
+                                                            searchableTris.end (), searchIdx);
+          if (it == searchableTris.end ()) {
             continue;
           }
         for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) { 
-          Triangle searchTri = allTriangles [searchIdx];
+          Triangle searchTri = allTris [searchIdx];
           if ((*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[0] || (*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[3]
               || (*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[2]) {
-            if (operations_[refOpIdx]->requirement (searchTri.normal)) {
-              if ((searchTri.normal - refTri.normal).sqrLength () < marginRad_) {
+            if (refOp->requirement (searchTri.normal)) {
+              if ((searchTri.normal - refTri.normal).sqrLength () < marginRad) {
                 area += searchTri.area;
                 listPotential.push_back (searchIdx);
-                searchLinkedTriangles (listPotential, refOpIdx, allTriangles, 
-                                       searchableTriangles, searchIdx, area);
+                searchLinkedTriangles (listPotential, refOp, allTris, 
+                                       searchableTris, searchIdx, area);
               }
             } else {
               // if linked face does not fulfil global requirement, discard
-              std::remove (searchableTriangles.begin (), searchableTriangles.end (), searchIdx);
-              searchableTriangles.pop_back ();
+              std::remove (searchableTris.begin (), searchableTris.end (), searchIdx);
+              searchableTris.pop_back ();
             }  
+          }
         }
       }
     }
-}
 
-    void AffordanceExtraction::extractAffordances (const fcl::CollisionObjectPtr_t& colObj)
+    SemanticsDataPtr_t AffordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
+                                           const std::vector <OperationBasePtr_t> & opVec)
     {
       BVHModelOBConst_Ptr_t model =  GetModel (colObj);
       std::vector <Triangle> triangles;
       std::vector <unsigned int> unsetTriangles;
       double totArea = .0;
-      std::vector<std::vector<unsigned int> > potentialAffordances (operations_.size ());
+      std::vector<std::vector<unsigned int> > potentialAffordances (opVec.size ());
+      SemanticsDataPtr_t foundAffordances(new SemanticsData(opVec.size ()));
 
       for(unsigned int i = 0; i < model->num_tris; ++i)
       {
@@ -116,30 +109,26 @@ namespace hpp {
         }
         // set list of searchable (unseen) triangles equal to all triangles not yet given an affordance.
         unseenTriangles = unsetTriangles;
-        for (unsigned int opIdx = 0; opIdx < operations_.size (); opIdx++) {
-          if (operations_[opIdx]->requirement (triangles[triIdx].normal)) {
+        for (unsigned int opIdx = 0; opIdx < opVec.size (); opIdx++) {
+          if (opVec[opIdx]->requirement (triangles[triIdx].normal)) {
              totArea += triangles[triIdx].area;
              potentialAffordances[opIdx].push_back(triIdx);
-             searchLinkedTriangles(potentialAffordances [opIdx], opIdx, triangles, unseenTriangles, triIdx, totArea);
-            if (totArea > operations_[opIdx]->getMinArea ()) {
+             searchLinkedTriangles(potentialAffordances [opIdx], opVec[opIdx], triangles, unseenTriangles, triIdx, totArea);
+            if (totArea > opVec[opIdx]->minArea_) {
               // save totArea for further use as well?
-              foundAffordances_.insert (std::make_pair (operations_[opIdx]->getAffordanceName (), 
-                                                        potentialAffordances [opIdx]));
+              AffordancePtr_t aff(new Affordance (potentialAffordances [opIdx], colObj));
+              foundAffordances->affordances_ [opIdx].push_back (aff);
               for (unsigned int removeIdx = 0; removeIdx < potentialAffordances [opIdx].size (); removeIdx++) {
                 std::remove (unsetTriangles.begin (), unsetTriangles.end (), potentialAffordances [opIdx][removeIdx]);
                 unsetTriangles.pop_back ();
-              }               potentialAffordances [opIdx].clear ();
-              
+              }               
+                potentialAffordances [opIdx].clear ();
              }
              break; 
           } 
         }
       }
-    }
-
-    std::vector <OperationBasePtr_t> AffordanceExtraction::getOperations ()
-    {
-      return operations_;
+      return foundAffordances;
     }
 
   } // namespace affordance

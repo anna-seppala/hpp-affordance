@@ -16,25 +16,13 @@ int main ()
   operations.push_back(support);
   operations.push_back(lean);  
 
-  hpp::affordance::AffordanceExtractionPtr_t u = hpp::affordance::AffordanceExtraction::create(operations);
-  std::cout << "Affordance Extraction object created." << std::endl;
-
-  std::cout << "z_world: " << support->getZWorld () << std::endl;
-  std::cout << "margin1: " << support->getMargin () << " and name: " << support->getAffordanceName () << std::endl;
-  std::cout << "margin2: " << lean->getMargin () << " and name: " << lean->getAffordanceName () << std::endl;
-  
-
+  std::cout << "z_world: " << support->zWorld_ << std::endl;
+  std::cout << "margin1: " << support->margin_ << " and name: " << support->affordance_ << std::endl;
+  std::cout << "margin2: " << lean->margin_ << " and name: " << lean->affordance_ << std::endl;
 
   fcl::Vec3f normal1(0, 0, 1);
   fcl::Vec3f normal2(0, 1, 0);
 
-  for (unsigned int i = 0; i < u->getOperations ().size(); i++) {
-   std::cout << "testing requirement." << std::endl;
-   if (u->getOperations ()[i]->requirement(normal2)) {
-     std::cout << "requirement fulfilled!" << std::endl;
-    }
-  } 
-  
   std::vector<fcl::Vec3f> vertices;
   std::vector<fcl::Triangle> triangles;
   
@@ -57,7 +45,7 @@ int main ()
   
   boost::shared_ptr <fcl::CollisionObject> obj (new fcl::CollisionObject(model, boxPose));
 
-  u->extractAffordances (obj);
+  hpp::affordance::SemanticsDataPtr_t h = hpp::affordance::AffordanceAnalysis (obj, operations);
 
   return 0;
 }
