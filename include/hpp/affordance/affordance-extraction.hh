@@ -24,7 +24,7 @@
 
 namespace hpp {
   namespace affordance {
-    /// \addtogroup 
+    /// \addtogroup
     /// \{
 
     struct TrianglePoints
@@ -34,6 +34,8 @@ namespace hpp {
 
     struct Triangle
     {
+      Triangle () {}
+
       Triangle (const fcl::Triangle& inFclTri, const TrianglePoints& inPoints):
                 points (inPoints), fclTri (new  fcl::Triangle (inFclTri))
       {
@@ -60,20 +62,25 @@ namespace hpp {
       boost::shared_ptr <fcl::Triangle> fclTri;
     };
 
-    class Affordance 
+    class Affordance
     {
       public:
-      Affordance (const std::vector<unsigned int>& idxVec, 
+
+      Affordance () {}
+
+      Affordance (const std::vector<unsigned int>& idxVec,
                   const fcl::CollisionObjectPtr_t& colObj):
                   indices_(idxVec), colObj_(colObj) {}
       std::vector<unsigned int> indices_;
       fcl::CollisionObjectPtr_t colObj_;
     };
 
-    class SemanticsData 
+    class SemanticsData
     {
       public:
-      SemanticsData (const long unsigned int& affordanceCount) 
+
+      SemanticsData (): SemanticsData (0) {}
+      SemanticsData (const long unsigned int& affordanceCount)
       {
         affordances_.resize(affordanceCount);
       }
@@ -82,9 +89,11 @@ namespace hpp {
 
     /// Free functions to extract whole-body affordances from fcl
     ///
-    void searchLinkedTriangles(std::vector<unsigned int>& listPotential, const OperationBasePtr_t& refOp,
-                               const std::vector<Triangle>& allTris, std::vector<unsigned int>& searchableTris,
-                               const unsigned int& refTriIdx, double& area);
+    void searchLinkedTriangles(std::vector<unsigned int>& listPotential,
+                              const OperationBasePtr_t& refOp,
+                              const std::vector<Triangle>& allTris,
+                              std::vector<unsigned int>& searchableTris,
+                              const unsigned int& refTriIdx, double& area);
 
     SemanticsDataPtr_t AffordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
                                            const std::vector <OperationBasePtr_t> & opVec);

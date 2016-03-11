@@ -14,6 +14,6 @@ include_directories(${Boost_INCLUDE_DIRS})
 message ("current binary dir:, ${CMAKE_CURRENT_BINARY_DIR}")
 message ("boos include dir: ${Boost_INCLUDE_DIRS}")
 
-add_affordance_test(test-basic test-main.cc)
-add_affordance_test(test-create-environment test-main2.cc)
+#add_affordance_test(test-basic test-main.cc)
+#add_affordance_test(test-create-environment test-main2.cc)
 add_affordance_test(test-create-affordance test-main3.cc)

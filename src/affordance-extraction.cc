@@ -18,7 +18,7 @@
 
 #include <hpp/affordance/affordance-extraction.hh>
 #include <hpp/affordance/operations.hh>
-#include<hpp/fcl/collision_object.h> 
+#include<hpp/fcl/collision_object.h>
 #include <hpp/fcl/collision.h>
 #include <hpp/fcl/BVH/BVH_model.h>
 #include <algorithm>
@@ -33,7 +33,7 @@ namespace hpp {
     BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t object)
     {
         assert (object->collisionGeometry ()->getNodeType () == fcl::BV_OBBRSS);
-        const BVHModelOBConst_Ptr_t model = boost::static_pointer_cast<const BVHModelOB> 
+        const BVHModelOBConst_Ptr_t model = boost::static_pointer_cast<const BVHModelOB>
                                             (object->collisionGeometry ());
         assert (model->getModelType () == fcl::BVH_MODEL_TRIANGLES);
         return model;
@@ -41,8 +41,8 @@ namespace hpp {
 
     void searchLinkedTriangles(std::vector<unsigned int>& listPotential, const OperationBasePtr_t& refOp,
                                const std::vector<Triangle>& allTris, std::vector<unsigned int>& searchableTris,
-                               const unsigned int& refTriIdx, double& area) 
-    { 
+                               const unsigned int& refTriIdx, double& area)
+    {
       const float marginRad = 0.3;
       Triangle refTri = allTris[refTriIdx];
       // find a cleaner way of removing & resizing the searchableTriangels vector
@@ -54,22 +54,23 @@ namespace hpp {
           if (it == searchableTris.end ()) {
             continue;
           }
-        for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) { 
+        for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) {
           Triangle searchTri = allTris [searchIdx];
-          if ((*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[0] || (*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[3]
+          if ((*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[0]
+              || (*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[3]
               || (*refTri.fclTri)[vertIdx] == (*searchTri.fclTri)[2]) {
             if (refOp->requirement (searchTri.normal)) {
               if ((searchTri.normal - refTri.normal).sqrLength () < marginRad) {
                 area += searchTri.area;
                 listPotential.push_back (searchIdx);
-                searchLinkedTriangles (listPotential, refOp, allTris, 
+                searchLinkedTriangles (listPotential, refOp, allTris,
                                        searchableTris, searchIdx, area);
               }
             } else {
               // if linked face does not fulfil global requirement, discard
               std::remove (searchableTris.begin (), searchableTris.end (), searchIdx);
               searchableTris.pop_back ();
-            }  
+            }
           }
         }
       }
@@ -97,7 +98,7 @@ namespace hpp {
           model->vertices [fcltri [2]] + colObj->getTranslation ();
 
         triangles.push_back (Triangle (fcltri, tri));
-        // save vector index of triangles and their quantity. 
+        // save vector index of triangles and their quantity.
 	unsetTriangles.push_back(i);
       }
       std::vector <unsigned int> unseenTriangles;
@@ -121,11 +122,11 @@ namespace hpp {
               for (unsigned int removeIdx = 0; removeIdx < potentialAffordances [opIdx].size (); removeIdx++) {
                 std::remove (unsetTriangles.begin (), unsetTriangles.end (), potentialAffordances [opIdx][removeIdx]);
                 unsetTriangles.pop_back ();
-              }               
+              }
                 potentialAffordances [opIdx].clear ();
              }
-             break; 
-          } 
+             break;
+          }
         }
       }
       return foundAffordances;
