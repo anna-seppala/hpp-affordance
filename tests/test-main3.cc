@@ -8,13 +8,13 @@
 
 int main ()
 {
-  
+
   hpp::affordance::SupportOperationPtr_t support (new hpp::affordance::SupportOperation());
   hpp::affordance::LeanOperationPtr_t lean (new hpp::affordance::LeanOperation(0.1));
-  
+
   std::vector <hpp::affordance::OperationBasePtr_t> operations;
   operations.push_back(support);
-  operations.push_back(lean);  
+  operations.push_back(lean);
 
   std::cout << "z_world: " << support->zWorld_ << std::endl;
   std::cout << "margin1: " << support->margin_ << " and name: " << support->affordance_ << std::endl;
@@ -25,7 +25,7 @@ int main ()
 
   std::vector<fcl::Vec3f> vertices;
   std::vector<fcl::Triangle> triangles;
-  
+
   typedef fcl::BVHModel<fcl::OBBRSS> Model;
   boost::shared_ptr<Model> model (new Model ());
 
@@ -40,12 +40,12 @@ int main ()
 
   fcl::generateBVHModel (*model, box, boxPose);
 
-  std::cout << "Model has " << model->num_tris << " triangles and " 
+  std::cout << "Model has " << model->num_tris << " triangles and "
             << model->num_vertices << " vertices." << std::endl;
-  
+
   boost::shared_ptr <fcl::CollisionObject> obj (new fcl::CollisionObject(model, boxPose));
 
-  hpp::affordance::SemanticsDataPtr_t h = hpp::affordance::AffordanceAnalysis (obj, operations);
+  hpp::affordance::SemanticsDataPtr_t h = hpp::affordance::affordanceAnalysis (obj, operations);
 
   return 0;
 }

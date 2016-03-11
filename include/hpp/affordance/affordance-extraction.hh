@@ -95,7 +95,7 @@ namespace hpp {
                               std::vector<unsigned int>& searchableTris,
                               const unsigned int& refTriIdx, double& area);
 
-    SemanticsDataPtr_t AffordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
+    SemanticsDataPtr_t affordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
                                            const std::vector <OperationBasePtr_t> & opVec);
     /// \}
   } // namespace affordance

@@ -76,7 +76,7 @@ namespace hpp {
       }
     }
 
-    SemanticsDataPtr_t AffordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
+    SemanticsDataPtr_t affordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
                                            const std::vector <OperationBasePtr_t> & opVec)
     {
       BVHModelOBConst_Ptr_t model =  GetModel (colObj);
