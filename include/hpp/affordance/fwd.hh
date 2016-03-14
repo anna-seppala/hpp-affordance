@@ -31,13 +31,12 @@ namespace hpp {
     HPP_PREDEF_CLASS (SemanticsData);
     HPP_PREDEF_CLASS (Affordance);
     HPP_PREDEF_CLASS (OperationBase);
-    HPP_PREDEF_CLASS (CollisionObject);
     HPP_PREDEF_CLASS (SupportOperation);
     HPP_PREDEF_CLASS (LeanOperation);
 
     typedef boost::shared_ptr <SupportOperation> SupportOperationPtr_t;
     typedef boost::shared_ptr <LeanOperation> LeanOperationPtr_t;
-    typedef boost::shared_ptr <CollisionObject> CollisionObjectPtr_t;
+    typedef boost::shared_ptr <fcl::CollisionObject> CollisionObjectPtr_t;
     typedef boost::shared_ptr <OperationBase> OperationBasePtr_t; 
     typedef boost::shared_ptr <SemanticsData> SemanticsDataPtr_t;
     typedef boost::shared_ptr <Affordance> AffordancePtr_t;

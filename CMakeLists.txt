@@ -57,7 +57,7 @@ ADD_REQUIRED_DEPENDENCY("hpp-util >= 0.7")
 ADD_REQUIRED_DEPENDENCY("hpp-fcl >= 0.2.9")
 
 ## Add dependency toward hpp-affordance library in pkg-config file.
-#PKG_CONFIG_APPEND_LIBS("hpp-affordance")
+PKG_CONFIG_APPEND_LIBS("hpp-affordance")
 
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
