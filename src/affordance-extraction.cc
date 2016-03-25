@@ -27,9 +27,6 @@
 namespace hpp {
   namespace affordance {
 
-    typedef fcl::BVHModel<fcl::OBBRSS> BVHModelOB;
-    typedef boost::shared_ptr<const BVHModelOB> BVHModelOBConst_Ptr_t;
-
     BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t object)
     {
         assert (object->collisionGeometry ()->getNodeType () == fcl::BV_OBBRSS);
@@ -87,7 +84,7 @@ namespace hpp {
     }
 
     SemanticsDataPtr_t affordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
-                                           const std::vector <OperationBasePtr_t> & opVec)
+                                           const OperationBases_t& opVec)
     {
       BVHModelOBConst_Ptr_t model =  GetModel (colObj);
       std::cout << "Model has " << model->num_tris << " triangles and "
@@ -101,6 +98,8 @@ namespace hpp {
 
       for(unsigned int i = 0; i < model->num_tris; ++i)
       {
+        // TODO: make sure triagle points are correct in world frame after every 
+        // change!! 
         TrianglePoints tri;
         fcl::Triangle fcltri = model->tri_indices [i];
         tri.p1 = colObj->getRotation () *
@@ -158,6 +157,40 @@ namespace hpp {
       return foundAffordances;
     }
 
+    std::vector<CollisionObjects_t> getAffordanceObjects
+                                             (const SemanticsDataPtr_t& sData)
+    {
+      std::vector<CollisionObjects_t> affObjs;
+      for (unsigned int affIdx = 0; affIdx < sData->affordances_.size (); affIdx ++) {
+        std::vector<fcl::CollisionObjectPtr_t> objVec;
+        affObjs.push_back (objVec);
+        // get number of affordances of specific type (lean OR support etc)
+        // this corresponds to number of objects to be created for specific aff type
+        long unsigned int len = sData->affordances_[affIdx].size ();
+        for (unsigned int idx = 0; idx < len; idx++) {
+          std::vector<fcl::Vec3f> vertices;
+          std::vector<fcl::Triangle> triangles;
+          hpp::affordance::AffordancePtr_t affPtr = sData->affordances_[affIdx][idx];
+          BVHModelOBConst_Ptr_t model =  GetModel (affPtr->colObj_);
+          for (unsigned int triIdx = 0; triIdx <  affPtr->indices_.size (); triIdx++) {
+            vertices.push_back (model->vertices [affPtr->indices_[triIdx]]);
+            triangles.push_back (model->tri_indices [affPtr->indices_[triIdx]]);
+          }
+          
+          BVHModelOB_Ptr_t model1 (new BVHModelOB ());
+          // add the mesh data into the BVHModel structure
+          model1->beginModel ();
+          model1->addSubModel (vertices, triangles);
+          model1->endModel ();
+          // create affordance collision object from created affModel and 
+          // tranformation of corresponding reference collision object.
+          fcl::CollisionObjectPtr_t obj (new fcl::CollisionObject(model1,
+                                         affPtr->colObj_->getTransform ()));
+          affObjs[affIdx].push_back (obj);
+        }
+      }
+      return affObjs;
+    }
   } // namespace affordance
 } // namespace hpp
 

@@ -87,6 +87,8 @@ namespace hpp {
       std::vector<std::vector<AffordancePtr_t> > affordances_;
     };
 
+    BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t object);
+
     /// Free functions to extract whole-body affordances from fcl
     ///
     void searchLinkedTriangles(std::vector<unsigned int>& listPotential,
@@ -96,7 +98,10 @@ namespace hpp {
                               const unsigned int& refTriIdx, double& area);
 
     SemanticsDataPtr_t affordanceAnalysis (const fcl::CollisionObjectPtr_t& colObj,
-                                           const std::vector <OperationBasePtr_t> & opVec);
+                                           const OperationBases_t & opVec);
+
+    std::vector<CollisionObjects_t> getAffordanceObjects
+                                             (const SemanticsDataPtr_t& sData);
     /// \}
   } // namespace affordance
 } // namespace hpp
