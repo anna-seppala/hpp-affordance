@@ -152,8 +152,6 @@ namespace hpp {
             }
         }
       }
-      std::vector<AffordancePtr_t> a1 = foundAffordances->affordances_[0];
-      std::vector<AffordancePtr_t> a2 = foundAffordances->affordances_[1];
       return foundAffordances;
     }
 
@@ -161,8 +159,10 @@ namespace hpp {
                                              (const SemanticsDataPtr_t& sData)
     {
       std::vector<CollisionObjects_t> affObjs;
+			affObjs.clear();
       for (unsigned int affIdx = 0; affIdx < sData->affordances_.size (); affIdx ++) {
         std::vector<fcl::CollisionObjectPtr_t> objVec;
+				objVec.clear();
         affObjs.push_back (objVec);
         // get number of affordances of specific type (lean OR support etc)
         // this corresponds to number of objects to be created for specific aff type
@@ -173,8 +173,10 @@ namespace hpp {
           hpp::affordance::AffordancePtr_t affPtr = sData->affordances_[affIdx][idx];
           BVHModelOBConst_Ptr_t model =  GetModel (affPtr->colObj_);
           for (unsigned int triIdx = 0; triIdx <  affPtr->indices_.size (); triIdx++) {
-            vertices.push_back (model->vertices [affPtr->indices_[triIdx]]);
             triangles.push_back (model->tri_indices [affPtr->indices_[triIdx]]);
+						for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) {
+							vertices.push_back (model->vertices [vertIdx + 3*(affPtr->indices_[triIdx])]);
+						}
           }
           
           BVHModelOB_Ptr_t model1 (new BVHModelOB ());
