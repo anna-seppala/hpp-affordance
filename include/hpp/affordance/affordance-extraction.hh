@@ -53,7 +53,7 @@ namespace hpp {
       }
       void TriangleNormal(TrianglePoints& tri)
       {
-        normal = (tri.p3 - tri.p1).cross(tri.p2 - tri.p1);
+        normal = (tri.p2 - tri.p1).cross(tri.p3 - tri.p1);
         normal.normalize();
       }
       TrianglePoints points;
