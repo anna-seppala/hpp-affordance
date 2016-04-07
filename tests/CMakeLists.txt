@@ -38,6 +38,7 @@ macro(add_testcase NAME GENERATED)
   add_test(${NAME} ${RUNTIME_OUTPUT_DIRECTORY}/${NAME})
 
   PKG_CONFIG_USE_DEPENDENCY(${NAME} hpp-fcl)
+	PKG_CONFIG_USE_DEPENDENCY(${NAME} eigen3)
 
 	target_link_libraries(${NAME}
     ${Boost_LIBRARIES}
