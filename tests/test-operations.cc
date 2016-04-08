@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_CASE (operations)
   const fcl::Vec3f normal1(0, 0, 1);
 
 	BOOST_CHECK_MESSAGE (support->zWorld_ == normal1, 
-		"default value for zWorld should be " << normal1);
+		"default value for zWorld should be " << normal1 << " but is " << support->zWorld_);
 
 	BOOST_CHECK_MESSAGE (lean->margin_ == 0.1, 
 		"margin should match the one given when creating operation");

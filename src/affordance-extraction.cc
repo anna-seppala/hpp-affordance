@@ -128,7 +128,8 @@ namespace hpp {
              std::cout << "It fulfils requirement "<< opIdx << std::endl;
              totArea += triangles[triIdx].area;
              potentialAffordances[opIdx].push_back(triIdx);
-             searchLinkedTriangles(potentialAffordances [opIdx], opVec[opIdx], triangles, unseenTriangles, triIdx, totArea);
+             searchLinkedTriangles(potentialAffordances [opIdx], opVec[opIdx],
+						 	 triangles, unseenTriangles, triIdx, totArea);
             if (totArea > opVec[opIdx]->minArea_) {
               // save totArea for further use as well?
               AffordancePtr_t aff(new Affordance (potentialAffordances [opIdx], colObj));
