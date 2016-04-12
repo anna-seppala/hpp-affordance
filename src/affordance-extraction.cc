@@ -134,7 +134,7 @@ namespace hpp {
               // save totArea for further use as well?
               AffordancePtr_t aff(new Affordance (potentialAffordances [opIdx], colObj));
               foundAffordances->affordances_ [opIdx].push_back (aff);
-              std::cout << "aff found" << std::endl;
+              std::cout << "====================> aff found" << std::endl;
               for (unsigned int removeIdx = 0; removeIdx < potentialAffordances [opIdx].size (); removeIdx++) {
                 std::remove (unsetTriangles.begin (), unsetTriangles.end (), potentialAffordances [opIdx][removeIdx]);
                 unsetTriangles.pop_back ();
