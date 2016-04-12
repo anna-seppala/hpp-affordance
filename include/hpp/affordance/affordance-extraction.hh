@@ -102,6 +102,11 @@ namespace hpp {
 
     std::vector<CollisionObjects_t> getAffordanceObjects
                                              (const SemanticsDataPtr_t& sData);
+
+		OperationBases_t createOperations ();
+
+		
+
     /// \}
   } // namespace affordance
 } // namespace hpp

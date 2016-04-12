@@ -40,8 +40,8 @@ namespace hpp {
                                const std::vector<Triangle>& allTris, std::vector<unsigned int>& searchableTris,
                                const unsigned int& refTriIdx, double& area)
     {
-      const float marginRad = 0.3;
-      const float margin = 1e-15;
+      const double marginRad = 0.3;
+      const double margin = 1e-15;
       Triangle refTri = allTris[refTriIdx];
       // find a cleaner way of removing & resizing the searchableTriangels vector
       std::remove (searchableTris.begin (), searchableTris.end (), refTriIdx);
@@ -194,6 +194,19 @@ namespace hpp {
       }
       return affObjs;
     }
+
+		OperationBases_t createOperations ()
+		{
+			affordance::SupportOperationPtr_t support (new affordance::SupportOperation());
+      affordance::LeanOperationPtr_t lean (new affordance::LeanOperation(0.1));
+
+      affordance::OperationBases_t operations;
+      operations.push_back(support);
+      operations.push_back(lean);
+			
+			return operations;
+		}
+
   } // namespace affordance
 } // namespace hpp
 
