@@ -18,7 +18,7 @@
 
 #include <hpp/affordance/affordance-extraction.hh>
 #include <hpp/affordance/operations.hh>
-#include<hpp/fcl/collision_object.h>
+#include <hpp/fcl/collision_object.h>
 #include <hpp/fcl/collision.h>
 #include <hpp/fcl/BVH/BVH_model.h>
 #include <algorithm>
@@ -46,7 +46,6 @@ namespace hpp {
       // find a cleaner way of removing & resizing the searchableTriangels vector
       std::remove (searchableTris.begin (), searchableTris.end (), refTriIdx);
       searchableTris.pop_back ();
-      std::cout << "and is refTri " << refTriIdx << std::endl;
       for (unsigned int searchIdx = 0; searchIdx < allTris.size (); searchIdx++) {
         std::vector<unsigned int>::iterator it = std::find (searchableTris.begin (),
                                                             searchableTris.end (), searchIdx);
@@ -62,15 +61,12 @@ namespace hpp {
           if ((refPoints[vertIdx] - searchTri.points.p1).sqrLength () < margin
               || (refPoints[vertIdx] - searchTri.points.p2).sqrLength () < margin
               || (refPoints[vertIdx] - searchTri.points.p3).sqrLength () < margin) {
-            std::cout << "and has triangle " << searchIdx << " as its neighbour"<< std::endl;
             if (refOp->requirement (searchTri.normal)) {
               if ((searchTri.normal - refTri.normal).sqrLength () < marginRad) {
-                std::cout << "which is also a potential affordance" << std::endl;
                 area += searchTri.area;
                 listPotential.push_back (searchIdx);
                 searchLinkedTriangles (listPotential, refOp, allTris,
                                        searchableTris, searchIdx, area);
-              std::cout << "now going back to refTri " << refTriIdx << std::endl;
               }
             } else {
               // if linked face does not fulfil global requirement, discard
@@ -87,8 +83,6 @@ namespace hpp {
                                            const OperationBases_t& opVec)
     {
       BVHModelOBConst_Ptr_t model =  GetModel (colObj);
-      std::cout << "Model has " << model->num_tris << " triangles and "
-        << model->num_vertices << " vertices." << std::endl;
 
       std::vector <Triangle> triangles;
       std::vector <unsigned int> unsetTriangles;
@@ -120,12 +114,10 @@ namespace hpp {
         if (it == unsetTriangles.end ()) {
           continue;
         }
-        std::cout << "looking at triangle " << triIdx << std::endl;
         // set list of searchable (unseen) triangles equal to all triangles not yet given an affordance.
         unseenTriangles = unsetTriangles;
         for (unsigned int opIdx = 0; opIdx < opVec.size (); opIdx++) {
           if (opVec[opIdx]->requirement (triangles[triIdx].normal)) {
-             std::cout << "It fulfils requirement "<< opIdx << std::endl;
              totArea += triangles[triIdx].area;
              potentialAffordances[opIdx].push_back(triIdx);
              searchLinkedTriangles(potentialAffordances [opIdx], opVec[opIdx],
@@ -134,11 +126,9 @@ namespace hpp {
               // save totArea for further use as well?
               AffordancePtr_t aff(new Affordance (potentialAffordances [opIdx], colObj));
               foundAffordances->affordances_ [opIdx].push_back (aff);
-              std::cout << "====================> aff found" << std::endl;
               for (unsigned int removeIdx = 0; removeIdx < potentialAffordances [opIdx].size (); removeIdx++) {
                 std::remove (unsetTriangles.begin (), unsetTriangles.end (), potentialAffordances [opIdx][removeIdx]);
                 unsetTriangles.pop_back ();
-                std::cout << "remove tri " << potentialAffordances [opIdx][removeIdx] << " from unsetTris" << std::endl;
               }
                 // potentialAffordances [opIdx].clear ();
              }
@@ -149,7 +139,6 @@ namespace hpp {
               // delete triangle if it did not fulfil any requirements
               std::remove (unsetTriangles.begin (), unsetTriangles.end (), triIdx);
               unsetTriangles.pop_back ();
-              std::cout << "Tri " << triIdx << " did not fulfil any requirement and is deleted" << std::endl;
             }
         }
       }
@@ -174,7 +163,9 @@ namespace hpp {
           hpp::affordance::AffordancePtr_t affPtr = sData->affordances_[affIdx][idx];
           BVHModelOBConst_Ptr_t model =  GetModel (affPtr->colObj_);
           for (unsigned int triIdx = 0; triIdx <  affPtr->indices_.size (); triIdx++) {
-            triangles.push_back (model->tri_indices [affPtr->indices_[triIdx]]);
+						// give triangles of new object new vertex indices (start from 0
+						// and go up to 3*nbTris - 1 [all tris have 3 unique indices])
+            triangles.push_back (fcl::Triangle ((3*triIdx),(1 + 3*triIdx),(2 + 3*triIdx)));
 						for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) {
 							vertices.push_back (model->vertices [vertIdx + 3*(affPtr->indices_[triIdx])]);
 						}
