@@ -21,12 +21,12 @@
 #include <hpp/fcl/BVH/BVH_model.h>
 #include <hpp/fcl/shape/geometric_shape_to_BVH_model.h>
 
-#define BOOST_TEST_MODULE test-oriented-triangles
+#define BOOST_TEST_MODULE test-oriented-triangles2
 #include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE (test_affordance)
 
-BOOST_AUTO_TEST_CASE (oriented_triangles)
+BOOST_AUTO_TEST_CASE (oriented_triangles2)
 {
 	hpp::affordance::SupportOperationPtr_t support (new hpp::affordance::SupportOperation());
   hpp::affordance::LeanOperationPtr_t lean (new hpp::affordance::LeanOperation(0.1));
@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE (oriented_triangles)
 		}
 }
 	BOOST_CHECK_MESSAGE (affFound == 6 && affNotFound == 1, 
-		"Strictly six affordances should have been found and one rejected. Now "<< affFound << 
+		"Strictly six lean affordances should have been found and one rejected. Now "<< affFound << 
 		"were found and "<< affNotFound << " rejected.");
 }
 BOOST_AUTO_TEST_SUITE_END ()
