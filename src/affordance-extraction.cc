@@ -40,10 +40,11 @@ namespace hpp {
                                const std::vector<Triangle>& allTris, std::vector<unsigned int>& searchableTris,
                                const unsigned int& refTriIdx, double& area)
     {
+			// TODO: think of a better way of declaring margins?
       const double marginRad = 0.3;
       const double margin = 1e-15;
       Triangle refTri = allTris[refTriIdx];
-      // find a cleaner way of removing & resizing the searchableTriangels vector
+      // TODO: find a cleaner way of removing & resizing the searchableTriangels vector?
       std::remove (searchableTris.begin (), searchableTris.end (), refTriIdx);
       searchableTris.pop_back ();
       for (unsigned int searchIdx = 0; searchIdx < allTris.size (); searchIdx++) {
@@ -105,7 +106,7 @@ namespace hpp {
 
         triangles.push_back (Triangle (fcltri, tri));
         // save vector index of triangles and their quantity.
-	unsetTriangles.push_back(i);
+				unsetTriangles.push_back(i);
       }
       std::vector <unsigned int> unseenTriangles;
       for (unsigned int triIdx = 0; triIdx < triangles.size (); triIdx++) {
