@@ -51,4 +51,6 @@ endmacro(add_testcase)
 # add_affordance_test(test-create-affordance test-main3.cc)
 
 add_testcase (test-operations FALSE)
-add_testcase (test-one-triangle FALSE)
+add_testcase (test-one-triangle1 FALSE)
+add_testcase (test-one-triangle2 FALSE)
+add_testcase (test-oriented-triangles FALSE)

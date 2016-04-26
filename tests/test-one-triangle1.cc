@@ -21,12 +21,12 @@
 #include <hpp/fcl/BVH/BVH_model.h>
 #include <hpp/fcl/shape/geometric_shape_to_BVH_model.h>
 
-#define BOOST_TEST_MODULE test-one-triangle
+#define BOOST_TEST_MODULE test-one-triangle1
 #include <boost/test/included/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE (test_affordance)
 
-BOOST_AUTO_TEST_CASE (one_triangle)
+BOOST_AUTO_TEST_CASE (one_triangle1)
 {
 	hpp::affordance::SupportOperationPtr_t support (new hpp::affordance::SupportOperation());
   hpp::affordance::LeanOperationPtr_t lean (new hpp::affordance::LeanOperation(0.1));
