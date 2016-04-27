@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE (oriented_triangles2)
 	fcl::Vec3f axis (1,0,0);
 	fcl::Matrix3f R;
 
-	for (unsigned int i = 0; i < size_; ++i) {
+	for (int i = 0; i < size_; ++i) {
 	  boost::shared_ptr<Model> model (new Model ());
 		fcl::Triangle tri (0,1,2);
 		triangles.push_back (tri); 

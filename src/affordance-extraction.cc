@@ -27,7 +27,7 @@
 namespace hpp {
   namespace affordance {
 
-    BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t object)
+    BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t& object)
     {
         assert (object->collisionGeometry ()->getNodeType () == fcl::BV_OBBRSS);
         const BVHModelOBConst_Ptr_t model = boost::static_pointer_cast<const BVHModelOB>
@@ -43,10 +43,9 @@ namespace hpp {
 			// TODO: think of a better way of declaring margins?
       const double marginRad = 0.3;
       const double margin = 1e-15;
-      Triangle refTri = allTris[refTriIdx];
-      // TODO: find a cleaner way of removing & resizing the searchableTriangels vector?
-      std::remove (searchableTris.begin (), searchableTris.end (), refTriIdx);
-      searchableTris.pop_back ();
+			const Triangle& refTri = allTris[refTriIdx];
+			searchableTris.erase (std::remove(searchableTris.begin (),
+				searchableTris.end (), refTriIdx), searchableTris.end ());
       for (unsigned int searchIdx = 0; searchIdx < allTris.size (); searchIdx++) {
         std::vector<unsigned int>::iterator it = std::find (searchableTris.begin (),
                                                             searchableTris.end (), searchIdx);
@@ -58,7 +57,7 @@ namespace hpp {
           refPoints.push_back(refTri.points.p2);
           refPoints.push_back(refTri.points.p3);
         for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) {
-          Triangle searchTri = allTris [searchIdx];
+          const Triangle& searchTri = allTris [searchIdx];
           if ((refPoints[vertIdx] - searchTri.points.p1).sqrLength () < margin
               || (refPoints[vertIdx] - searchTri.points.p2).sqrLength () < margin
               || (refPoints[vertIdx] - searchTri.points.p3).sqrLength () < margin) {
@@ -71,8 +70,8 @@ namespace hpp {
               }
             } else {
               // if linked face does not fulfil global requirement, discard
-              std::remove (searchableTris.begin (), searchableTris.end (), searchIdx);
-              searchableTris.pop_back ();
+							searchableTris.erase(std::remove(searchableTris.begin(),
+								searchableTris.end(), searchIdx), searchableTris.end());
             }
             break; // jump out of vertex loop if triangle already tested for affordance
           }
@@ -89,12 +88,10 @@ namespace hpp {
       std::vector <unsigned int> unsetTriangles;
       double totArea = .0;
       std::vector<std::vector<unsigned int> > potentialAffordances (opVec.size ());
-      SemanticsDataPtr_t foundAffordances(new SemanticsData(opVec.size ()));
+      SemanticsDataPtr_t foundAffordances(new SemanticsData());
 
-      for(unsigned int i = 0; i < model->num_tris; ++i)
+      for(int i = 0; i < model->num_tris; ++i)
       {
-        // TODO: make sure triagle points are correct in world frame after every 
-        // change!! 
         TrianglePoints tri;
         fcl::Triangle fcltri = model->tri_indices [i];
         tri.p1 = colObj->getRotation () *

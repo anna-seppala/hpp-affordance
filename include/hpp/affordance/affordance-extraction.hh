@@ -61,7 +61,7 @@ namespace hpp {
     };
 
 		// helper function to extract mesh model of an fcl::collisionObstacle
-    BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t object);
+    BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t& object);
 
     /// \addtogroup affordance
     /// \{
@@ -94,17 +94,11 @@ namespace hpp {
     {
       public:
 
-      SemanticsData (): SemanticsData (0) {}
-			/// Constructor that adjust the affordances_ vector to
-			/// the amount of defined affordance types but leaves the
-			/// vectors of affordances empty.
-			///
-			/// \param affordanceCount number of defined affordance types.
-			SemanticsData (const long unsigned int& affordanceCount)
-      {
-        affordances_.resize(affordanceCount);
-      }
+      SemanticsData () {}
       std::vector<std::vector<AffordancePtr_t> > affordances_;
+			private:
+			SemanticsData(const SemanticsData&); // Prevent copy-construction
+			SemanticsData& operator=(const SemanticsData&);
     };
 
 
@@ -131,7 +125,7 @@ namespace hpp {
 		///				 the global requirement set by the affordance type, it is deleted
 		/// 			 and will not be tested again in subsequent recursive steps.
 		/// \param refTriIdx index corresponding to the last found triangle that
-		///				 fullfils bot the local and the global requirement. It is then
+		///				 fullfils both the local and the global requirement. It is then
 		///				 used as reference in the following recursive step.
 		/// \param area total area of all triangles that are part of the potential
 		///				 affordance object. Every time a triangle fulfilling all set

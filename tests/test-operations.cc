@@ -22,6 +22,19 @@
 #define BOOST_TEST_MODULE test-operations
 #include <boost/test/included/unit_test.hpp>
 
+const double epsilon = 10e-6;
+
+bool compDouble(const double a, const double b)
+{
+	return a-b < epsilon;
+}
+
+bool compVec(const fcl::Vec3f& a, const fcl::Vec3f& b)
+{
+	return (a-b).norm() < epsilon;
+}
+
+
 BOOST_AUTO_TEST_SUITE (test_affordance)
 
 BOOST_AUTO_TEST_CASE (operations)
@@ -35,10 +48,10 @@ BOOST_AUTO_TEST_CASE (operations)
 
   const fcl::Vec3f normal1(0, 0, 1);
 
-	BOOST_CHECK_MESSAGE (support->zWorld_ == normal1, 
+	BOOST_CHECK_MESSAGE (compVec(support->zWorld_,normal1),
 		"default value for zWorld should be " << normal1 << " but is " << support->zWorld_);
 
-	BOOST_CHECK_MESSAGE (lean->margin_ == 0.1, 
+	BOOST_CHECK_MESSAGE (compDouble(lean->margin_,0.1),
 		"margin should match the one given when creating operation");
 
 	BOOST_CHECK_MESSAGE (operations.size () == 2, 
