@@ -89,6 +89,7 @@ namespace hpp {
       double totArea = .0;
       std::vector<std::vector<unsigned int> > potentialAffordances (opVec.size ());
       SemanticsDataPtr_t foundAffordances(new SemanticsData());
+			foundAffordances->affordances_.resize (opVec.size ());
 
       for(int i = 0; i < model->num_tris; ++i)
       {
