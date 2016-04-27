@@ -34,6 +34,7 @@ namespace hpp {
     {
       Triangle () {}
 
+      //STEVE: are you sure you want to do a copy of the fcl triangle
       Triangle (const fcl::Triangle& inFclTri, const TrianglePoints& inPoints):
                 points (inPoints), fclTri (new  fcl::Triangle (inFclTri))
       {
@@ -61,7 +62,7 @@ namespace hpp {
     };
 
 		// helper function to extract mesh model of an fcl::collisionObstacle
-    BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t object);
+    BVHModelOBConst_Ptr_t GetModel (const fcl::CollisionObjectConstPtr_t& object);
 
     /// \addtogroup affordance
     /// \{
@@ -93,18 +94,25 @@ namespace hpp {
     class SemanticsData
     {
       public:
-
+//STEVE Delegate constructors are c++ 11 only. For the time being we must remain in c ++ 10
       SemanticsData (): SemanticsData (0) {}
 			/// Constructor that adjust the affordances_ vector to
 			/// the amount of defined affordance types but leaves the
 			/// vectors of affordances empty.
 			///
 			/// \param affordanceCount number of defined affordance types.
-			SemanticsData (const long unsigned int& affordanceCount)
+            // STEVE: probably useless to call resize here, so I'd stick with the default constructor.
+            SemanticsData (const long unsigned int affordanceCount)
+            // STEVE Taking refs of numbers is not desirable because it does not allow dynamic initlization
+            // SemanticsData(2) is not possible, you need to do int tmp = 2; SemanticsData(tmp)
       {
         affordances_.resize(affordanceCount);
       }
+      // STEVE typedef ?
       std::vector<std::vector<AffordancePtr_t> > affordances_;
+      private:
+      SemanticsData(const SemanticsData&);                 // Prevent copy-construction
+      SemanticsData& operator=(const SemanticsData&);
     };
 
 
@@ -131,7 +139,7 @@ namespace hpp {
 		///				 the global requirement set by the affordance type, it is deleted
 		/// 			 and will not be tested again in subsequent recursive steps.
 		/// \param refTriIdx index corresponding to the last found triangle that
-		///				 fullfils bot the local and the global requirement. It is then
+        ///				 fullfils both the local and the global requirement. It is then
 		///				 used as reference in the following recursive step.
 		/// \param area total area of all triangles that are part of the potential
 		///				 affordance object. Every time a triangle fulfilling all set

@@ -29,10 +29,10 @@ namespace hpp {
       public:
         OperationBase (): zWorld_(0,0,1), margin_(0.3), minArea_(0.05), 
                           affordance_("noAffordance") {}
-        explicit OperationBase (const double & margin = 0.3, const double minArea = 0.05, 
+        explicit OperationBase (const double margin = 0.3, const double minArea = 0.05,
                                 const char* affordanceName = "noAffordance"): zWorld_(0,0,1), 
                                 margin_(margin), minArea_(minArea), affordance_(affordanceName) {}
-        virtual bool requirement (fcl::Vec3f normal) =0;
+        virtual bool requirement (const fcl::Vec3f& normal) =0;
 
         const fcl::Vec3f zWorld_;
         const double margin_;
@@ -43,31 +43,25 @@ namespace hpp {
     class SupportOperation : public OperationBase
     {
       public:
-	 explicit SupportOperation (const double & margin = 0.3, const double minArea = 0.05,  
-                                    const char* affordanceName = "Support"): 
+     explicit SupportOperation (const double margin = 0.3, const double minArea = 0.05,
+                                    const char* affordanceName = "Support"):
                                     OperationBase(margin, minArea, affordanceName) {}
 
-        bool requirement (fcl::Vec3f normal) 
+        bool requirement (const fcl::Vec3f& normal)
       {
-        if ((zWorld_ - normal).sqrLength() < margin_) {
-         return true;
-        }
-	return false;
+        return ((zWorld_ - normal).sqrLength() < margin_);
       }
     }; // class SupportOperation
    
     class LeanOperation : public OperationBase
     {
       public:
-        explicit LeanOperation (const double & margin = 0.3, const double minArea = 0.05,  
+        explicit LeanOperation (const double margin = 0.3, const double minArea = 0.05,
                                 const char* affordanceName = "Lean"): 
                                 OperationBase(margin, minArea, affordanceName) {}
-        bool requirement (fcl::Vec3f normal) 
+        bool requirement (const fcl::Vec3f& normal)
         {
-          if (fabs (normal.dot(zWorld_)) < margin_) {
-            return true;
-          }
-	  return false;
+          return (fabs (normal.dot(zWorld_)) < margin_);
         }
     }; // class LeanOperation
    
