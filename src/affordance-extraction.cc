@@ -101,7 +101,7 @@ namespace hpp {
         tri.p3 = colObj->getRotation () *
           model->vertices [fcltri [2]] + colObj->getTranslation ();
 
-        triangles.push_back (Triangle (fcltri, tri));
+        triangles.push_back (Triangle (tri));
         // save vector index of triangles and their quantity.
 				unsetTriangles.push_back(i);
       }

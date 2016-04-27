@@ -34,8 +34,8 @@ namespace hpp {
     {
       Triangle () {}
 
-      Triangle (const fcl::Triangle& inFclTri, const TrianglePoints& inPoints):
-                points (inPoints), fclTri (new  fcl::Triangle (inFclTri))
+      Triangle (const TrianglePoints& inPoints):
+                points (inPoints)
       {
         TriangleArea (points);
         TriangleNormal (points);
@@ -57,7 +57,6 @@ namespace hpp {
       TrianglePoints points;
       double area;
       fcl::Vec3f normal;
-      boost::shared_ptr <fcl::Triangle> fclTri;
     };
 
 		// helper function to extract mesh model of an fcl::collisionObstacle
