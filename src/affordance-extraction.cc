@@ -159,15 +159,33 @@ namespace hpp {
         for (unsigned int idx = 0; idx < len; idx++) {
           std::vector<fcl::Vec3f> vertices;
           std::vector<fcl::Triangle> triangles;
+					std::vector<std::size_t> triIndices;
+					triIndices.clear ();
           hpp::affordance::AffordancePtr_t affPtr = sData->affordances_[affIdx][idx];
           BVHModelOBConst_Ptr_t model =  GetModel (affPtr->colObj_);
           for (unsigned int triIdx = 0; triIdx <  affPtr->indices_.size (); triIdx++) {
 						// give triangles of new object new vertex indices (start from 0
 						// and go up to 3*nbTris - 1 [all tris have 3 unique indices])
-            triangles.push_back (fcl::Triangle ((3*triIdx),(1 + 3*triIdx),(2 + 3*triIdx)));
+						std::vector<std::size_t> triPoints;
+						const fcl::Triangle& refTri = model->tri_indices[affPtr->indices_[triIdx]];
+       //     triangles.push_back (refTri);
 						for (unsigned int vertIdx = 0; vertIdx < 3; vertIdx++) {
-							vertices.push_back (model->vertices [vertIdx + 3*(affPtr->indices_[triIdx])]);
+        			std::vector<std::size_t>::iterator it =
+								std::find (triIndices.begin (), triIndices.end (), refTri[vertIdx]);
+        		  if (it == triIndices.end ()) {
+								triIndices.push_back (refTri[vertIdx]);
+								vertices.push_back (model->vertices [refTri[vertIdx]]);
+								triPoints.push_back (std::size_t (vertices.size () -1));
+              } else {
+								triPoints.push_back (it - triIndices.begin ());
+							}
 						}
+						if (triPoints.size () != 3) {
+						  std::ostringstream oss
+                  ("wrong number of vertex indices in triangle!!");
+                throw std::runtime_error (oss.str ());
+						}
+						triangles.push_back (fcl::Triangle (triPoints[0], triPoints[1], triPoints[2]));
           }
           
           BVHModelOB_Ptr_t model1 (new BVHModelOB ());
