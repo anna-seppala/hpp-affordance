@@ -21,19 +21,19 @@
 
 #include <vector>
 #include <map>
-#include <hpp/util/pointer.hh>
+#include <boost/smart_ptr.hpp>
 #include <hpp/fcl/fwd.hh>
 #include <hpp/fcl/BVH/BVH_model.h>
 #include <hpp/fcl/math/vec_3f.h>
 
 namespace hpp {
   namespace affordance {
-    HPP_PREDEF_CLASS (AffordanceExtraction);
-    HPP_PREDEF_CLASS (SemanticsData);
-    HPP_PREDEF_CLASS (Affordance);
-    HPP_PREDEF_CLASS (OperationBase);
-    HPP_PREDEF_CLASS (SupportOperation);
-    HPP_PREDEF_CLASS (LeanOperation);
+    class AffordanceExtraction;
+    class SemanticsData;
+    class Affordance;
+    class OperationBase;
+    class SupportOperation;
+    class LeanOperation;
 
     typedef fcl::BVHModel<fcl::OBBRSS> BVHModelOB;
     typedef boost::shared_ptr<BVHModelOB> BVHModelOB_Ptr_t;

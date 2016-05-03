@@ -53,7 +53,6 @@ SET(${PROJECT_NAME}_HEADERS
 SEARCH_FOR_BOOST()
 
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.2")
-ADD_REQUIRED_DEPENDENCY("hpp-util >= 0.7")
 ADD_REQUIRED_DEPENDENCY("hpp-fcl >= 0.2.9")
 
 ## Add dependency toward hpp-affordance library in pkg-config file.
