@@ -22,8 +22,25 @@ above but analyses triangulated mesh files based on triangle normals.
 
 This library is part of the software Humanoid Path Planner [(link)](http://projects.laas.fr/gepetto/index.php/Software/Hpp).
 
-## Installation on ubuntu-14.04 64 bit with ros-indigo
+##Installation on ubuntu-14.04 64 bit with ros-indigo
 
-To install HPP - AFFORDANCE, you will need to install one other package of the Humanoid Path Planner software with their respective dependecies. Please see the instructions below for the full installation of HPP - AFFORDANCE:
+To install HPP - AFFORDANCE, you will need to install one other package of the Humanoid Path Planner software with its respective dependecies. Please see the instructions below for the full installation of HPP - AFFORDANCE:
 
+  1. install HPP - FCL (make sure you are on branch "affordance" in the repository)
+	- see https://github.com/anna-seppala/hpp-fcl
+
+  2. install Eigen 3
+	- see http://eigen.tuxfamily.org/
+
+  3. Use CMake to install the HPP-AFFORDANCE library. For instance:
+
+			mkdir $HPP_AFFORDANCE_DIR/build
+			cd $HPP_AFFORDANCE_DIR/build
+			cmake ..
+			make install
+
+
+##Documentation
+
+Open $DEVEL_DIR/install/share/doc/hpp-affordance/doxygen-html/index.html in a web brower and you will have access to the code documentation.
 
