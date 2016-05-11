@@ -25,21 +25,25 @@
 namespace hpp {
   namespace affordance {
 
+		/// Helper struct that saves the global position of the triangle
+		/// vertices of a fcl::Triangle.
 		struct TrianglePoints
     {
       fcl::Vec3f p1, p2, p3;
     };
-		// helper class to save triangle information
+		/// Helper class to save triangle information.
     struct Triangle
     {
       Triangle () {}
-
+			/// Constructor that takes in a TrianglePoints object.
       Triangle (const TrianglePoints& inPoints):
                 points (inPoints)
       {
         TriangleArea (points);
         TriangleNormal (points);
       }
+			/// Computes the area of a triangle.
+			/// \param tri The global position of a triangles vertices
       void TriangleArea(TrianglePoints& tri)
       {
         double a, b, c;
@@ -49,13 +53,19 @@ namespace hpp {
         double s = 0.5 * (a + b + c);
         area = sqrt(s * (s-a) * (s-b) * (s-c));
       }
+			/// Computes the normal vector of a triangle based on the
+			/// global position of its vertices. The normal is subject to convention!
+			/// \param tri The global position of a triangles vertices
       void TriangleNormal(TrianglePoints& tri)
       {
         normal = (tri.p2 - tri.p1).cross(tri.p3 - tri.p1);
         normal.normalize();
       }
+			/// The global position of a triangles vertices.
       TrianglePoints points;
+			/// The area of a triangle.
       double area;
+			/// The normal vector of a triangle.
       fcl::Vec3f normal;
     };
 
@@ -64,6 +74,7 @@ namespace hpp {
 
     /// \addtogroup affordance
     /// \{
+
 		/// Class that saves a reference collision object and indices to
 		/// those of its mesh triangles that form one affordance object.
 		/// This information will later be used to create fcl::collisionObjects
@@ -82,7 +93,11 @@ namespace hpp {
       Affordance (const std::vector<unsigned int>& idxVec,
                   const fcl::CollisionObjectPtr_t& colObj):
                   indices_(idxVec), colObj_(colObj) {}
+			/// Triangle indices that correspond to the triangles of the reference
+			/// collisionObstacle, and form the affordance object.
       std::vector<unsigned int> indices_;
+			/// Reference to the collisionObstacle the surfaces of which are used to
+			/// create the affordance object.
       fcl::CollisionObjectPtr_t colObj_;
     };
 		///	Class containing a vector of vectors of Affordance objects.
@@ -94,6 +109,10 @@ namespace hpp {
       public:
 
       SemanticsData () {}
+			/// Vector of vectors of Affordance objects. The size of the outer
+			/// vector corresponds to the number of affordance types, and that
+			/// of the inner vector to the amount of individual affordance objects
+			/// for each affordance type.
       std::vector<std::vector<AffordancePtr_t> > affordances_;
 			private:
 			SemanticsData(const SemanticsData&); // Prevent copy-construction
