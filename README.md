@@ -26,16 +26,22 @@ This library is part of the software Humanoid Path Planner [(link)](http://proje
 
 To install HPP - AFFORDANCE, you will need to install one other package of the Humanoid Path Planner software with its respective dependecies. Please see the instructions below for the full installation of HPP - AFFORDANCE:
 
-  1. install HPP - FCL (make sure you are on branch "affordance" in the repository)
+  1. Install HPP - FCL (make sure you are on branch "affordance" in the repository)
 	- see https://github.com/anna-seppala/hpp-fcl
 
-  2. install Eigen 3
+  2. Install Eigen 3
 	- see http://eigen.tuxfamily.org/
 
-  3. Use CMake to install the HPP-AFFORDANCE library. For instance:
+  3. Clone the HPP - AFFORDANCE repository onto your local computer and update the submodule:
 
-			mkdir $HPP_AFFORDANCE_DIR/build
-			cd $HPP_AFFORDANCE_DIR/build
+			git clone https://github.com/anna-seppala/hpp-affordance.git
+			cd $HPP_AFFORDANCE_DIR/
+			git submodule update --init --recursive
+
+  4. Use CMake to install the HPP - AFFORDANCE library. For instance:
+
+			mkdir build
+			cd build
 			cmake ..
 			make install
 
