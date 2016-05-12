@@ -6,7 +6,7 @@ Author: Anna Seppala
 
 ## Description
 HPP - AFFORDANCE is a library that builds representations of a robot's environment in terms 
-ofaffordances, which describe surrounding objects based on their application possibilities.
+of affordances, which describe surrounding objects based on their application possibilities.
 For instance, large vertical surfaces may be applied for leaning, whereas smaller horizontal
 surface areas (e.g. stairs) allow for a robot to step on them.
 This idea was presented in multiple papers by Kaiser et al. [(link)] (http://h2t.anthropomatik.kit.edu/english/21_459.php):

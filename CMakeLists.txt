@@ -61,5 +61,7 @@ PKG_CONFIG_APPEND_LIBS("hpp-affordance")
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(tests)
 
+CONFIG_FILES (include/hpp/affordance/doc.hh)
+
 SETUP_PROJECT_FINALIZE()
 #SETUP_PROJECT_CPACK()

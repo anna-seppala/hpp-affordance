@@ -1,0 +1,46 @@
+// Copyright (C) 2016 CNRS-LAAS
+// Author: Anna Seppala.
+//
+// This file is part of the hpp-affordance.
+//
+// hpp-affordance is free software: you can redistribute
+// it and/or modify it under the terms of the GNU Lesser General
+// Public License as published by the Free Software Foundation, either
+// version 3 of the License, or (at your option) any later version.
+//
+// hpp-affordance is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+//
+// You should have received a copy of the GNU Lesser General Public
+// License along with hpp-affordance.  If not, see
+// <http://www.gnu.org/licenses/>.
+
+/// \mainpage
+///
+/// \section hpp_affordance_intro Introduction
+///
+/// This package implements a library that builds representations of a robot's
+/// environment in terms of affordances, which describe surrounding objects
+/// based on their application possibilities. For instance, large vertical
+/// surfaces may be applied for leaning, whereas smaller horizontal surface
+/// areas (e.g. stairs) allow for a robot to step on them.
+///
+/// hpp-affordance utilises triangulated meshes created from objects of type 
+/// fcl::collisionObject as implemented in \htmlonly<a class="el" href="@HPP_FCL_DOXYGENDOCDIR@/index.html">hpp-fcl</a>\endhtmlonly. Please refer to its package documentation for details.
+///
+/// There are some helper classes within this package that help in the
+/// affordance analysis. For example:
+/// \li hpp::affordance::Affordance
+/// \li hpp::affordance::SemanticsData
+/// \li hpp::affordance::OperationBase
+/// 
+/// However, the main functionality is provided by free functions, such as
+/// \li hpp::affordance::affordanceAnalysis
+/// 
+/// 
+/// 
+/// 
+/// 
+///
