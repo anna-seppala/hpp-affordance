@@ -173,10 +173,7 @@ namespace hpp {
     std::vector<CollisionObjects_t> getAffordanceObjects
                                              (const SemanticsDataPtr_t& sData);
 
-		/// Free helper function that creates a vector of operation objects.
-		OperationBases_t createOperations ();
-
-    /// \}
+		/// \}
   } // namespace affordance
 } // namespace hpp
 

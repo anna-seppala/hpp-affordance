@@ -62,7 +62,7 @@ namespace hpp {
               || (refPoints[vertIdx] - searchTri.points.p2).sqrLength () < margin
               || (refPoints[vertIdx] - searchTri.points.p3).sqrLength () < margin) {
             if (refOp->requirement (searchTri.normal)) {
-              if ((searchTri.normal - refTri.normal).sqrLength () < marginRad) {
+              if ((searchTri.normal - refTri.normal).sqrLength () < refOp->neighbouringTriangleMargin_) {
                 area += searchTri.area;
                 listPotential.push_back (searchIdx);
                 searchLinkedTriangles (listPotential, refOp, allTris,
@@ -202,18 +202,6 @@ namespace hpp {
       }
       return affObjs;
     }
-
-		OperationBases_t createOperations ()
-		{
-			affordance::SupportOperationPtr_t support (new affordance::SupportOperation());
-      affordance::LeanOperationPtr_t lean (new affordance::LeanOperation(0.1));
-
-      affordance::OperationBases_t operations;
-      operations.push_back(support);
-      operations.push_back(lean);
-			
-			return operations;
-		}
 
   } // namespace affordance
 } // namespace hpp
