@@ -41,7 +41,6 @@ namespace hpp {
                                const unsigned int& refTriIdx, double& area)
     {
 			// TODO: think of a better way of declaring margins?
-      const double marginRad = 0.3;
       const double margin = 1e-15;
 			const Triangle& refTri = allTris[refTriIdx];
 			searchableTris.erase (std::remove(searchableTris.begin (),
