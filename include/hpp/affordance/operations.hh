@@ -41,7 +41,11 @@ namespace hpp {
 				/// Constructor that allows for user-defined parameters. Default values are given for
 				/// parameters that are not defined by the user.
 				/// \param margin Margin needed for the evaluation of the requirement function
-				/// \param minArea Minimum area needed for the formation of an affordance object
+				/// \param nbTriMargin Margin between two triangles tested for a single
+        ///  affordance surface. If the angle between two triangles is greater
+        ///  than the provided margin, the triangles cannot be part of the same
+        ///  affordance surface.
+        /// \param minArea Minimum area needed for the formation of an affordance object
 				/// \param affordanceName The name of the affordance type
         explicit OperationBase (const double margin = 0.3, const double nbTriMargin = 0.3,
 																const double minArea = 0.05,
@@ -74,6 +78,10 @@ namespace hpp {
       public:
 				/// Constructor that takes in user-defined parameters
 				/// \param margin Margin needed for the evaluation of the requirement function
+				/// \param nbTriMargin Margin between two triangles tested for a single
+        ///  affordance surface. If the angle between two triangles is greater
+        ///  than the provided margin, the triangles cannot be part of the same
+        ///  affordance surface.
 				/// \param minArea Minimum area needed for the formation of an affordance object
 				/// \param affordanceName The name of the affordance type
 				explicit SupportOperation (const double margin = 0.3, const double nbTriMargin = 0.3,
@@ -95,6 +103,10 @@ namespace hpp {
       public:
 			/// Constructor that takes in user-defined parameters
 			/// \param margin Margin needed for the evaluation of the requirement function
+			/// \param nbTriMargin Margin between two triangles tested for a single
+      ///  affordance surface. If the angle between two triangles is greater
+      ///  than the provided margin, the triangles cannot be part of the same
+      ///  affordance surface.
 			/// \param minArea Minimum area needed for the formation of an affordance object
 			/// \param affordanceName The name of the affordance type
       explicit LeanOperation (const double margin = 0.3, const double nbTriMargin = 0.3,
